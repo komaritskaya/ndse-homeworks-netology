@@ -1,0 +1,17 @@
+{
+  "name": "displaydate",
+  "version": "1.0.0",
+  "description": "Utility for getting current date/time",
+  "main": "index.js",
+  "bin": {
+    "displaydate": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "yargs": "^17.5.1"
+  }
+}
