@@ -1,6 +1,7 @@
 const express = require('express');
 const { Book } = require('../model');
 const { store } = require('../store');
+const fileMulter = require('../middleware/file');
 const router = express.Router();
 
 router.get('/api/books', (req, res) => {
@@ -74,8 +75,31 @@ router.get("/:id/download", (req, res) => {
     const { bookStorage } = store;
     const { id } = req.params;
     const index = bookStorage.findIndex(el => el.id === id);
-    if (index !== -1) {
+    if (index !== -1 && bookStorage[index].fileBook) {
         res.download(bookStorage[index].fileBook, bookStorage[index].fileName);
+    } else {
+        res.status(404);
+        res.json({ code: 404, message: '404 | page not found' });
+    }
+});
+
+router.post('/:id/upload', fileMulter.single('file'), (req, res) => {
+    const { bookStorage } = store;
+    const { id } = req.params;
+
+    if (!req.file) {
+        res.json(null);
+        return;
+    }
+
+    const { path } = req.file;
+    const index = bookStorage.findIndex((el) => el.id === id);
+
+    if (index !== -1) {
+        bookStorage[index] = {
+            ...bookStorage[index],
+            fileBook: path
+        }
     } else {
         res.status(404);
         res.json({ code: 404, message: '404 | page not found' });
